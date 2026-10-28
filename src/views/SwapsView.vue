@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { swapsApi } from '../api/swaps';
 import { ApiRequestError } from '../api/client';
@@ -152,8 +152,19 @@ function statusBadgeClass(status: SwapStatus): string {
     }
 }
 
+watch(
+    () => authStore.businessId,
+    (id) => {
+        if (id) {
+            loadSwaps();
+        }
+    }
+);
+
 onMounted(() => {
-    loadSwaps();
+    if (authStore.businessId) {
+        loadSwaps();
+    }
 });
 </script>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { shiftsApi } from '../api/shifts';
 import { locationsApi } from '../api/locations';
@@ -239,9 +239,21 @@ function isMyShift(shift: Shift): boolean {
     return shift.assigned_staff?.some((s) => s.user_id === authStore.user?.id) || false;
 }
 
+watch(
+    () => authStore.businessId,
+    (id) => {
+        if (id) {
+            loadMeta();
+            loadShifts();
+        }
+    }
+);
+
 onMounted(() => {
-    loadMeta();
-    loadShifts();
+    if (authStore.businessId) {
+        loadMeta();
+        loadShifts();
+    }
 });
 </script>
 

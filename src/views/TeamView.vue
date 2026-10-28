@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { staffApi } from '../api/staff';
 import { ApiRequestError } from '../api/client';
@@ -106,8 +106,19 @@ async function handleTransferOwnership(): Promise<void> {
     }
 }
 
+watch(
+    () => authStore.businessId,
+    (id) => {
+        if (id) {
+            loadMembers();
+        }
+    }
+);
+
 onMounted(() => {
-    loadMembers();
+    if (authStore.businessId) {
+        loadMembers();
+    }
 });
 </script>
 

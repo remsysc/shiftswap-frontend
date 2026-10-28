@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { locationsApi } from '../api/locations';
 import { ApiRequestError } from '../api/client';
@@ -98,8 +98,19 @@ async function handleDeleteLocation(loc: Location): Promise<void> {
     }
 }
 
+watch(
+    () => authStore.businessId,
+    (id) => {
+        if (id) {
+            loadLocations();
+        }
+    }
+);
+
 onMounted(() => {
-    loadLocations();
+    if (authStore.businessId) {
+        loadLocations();
+    }
 });
 </script>
 

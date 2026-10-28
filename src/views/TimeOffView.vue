@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { timeOffApi } from '../api/timeOff';
 import { ApiRequestError } from '../api/client';
@@ -137,8 +137,19 @@ async function handleReject(req: TimeOffRequest): Promise<void> {
     }
 }
 
+watch(
+    () => authStore.businessId,
+    (id) => {
+        if (id) {
+            loadRequests();
+        }
+    }
+);
+
 onMounted(() => {
-    loadRequests();
+    if (authStore.businessId) {
+        loadRequests();
+    }
 });
 </script>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter, useRoute, RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import { notificationsApi } from '../api/notifications';
@@ -83,8 +83,19 @@ async function handleLogout(): Promise<void> {
     router.push('/login');
 }
 
+watch(
+    () => authStore.businessId,
+    (id) => {
+        if (id) {
+            loadNotifications();
+        }
+    }
+);
+
 onMounted(() => {
-    loadNotifications();
+    if (authStore.businessId) {
+        loadNotifications();
+    }
 });
 </script>
 

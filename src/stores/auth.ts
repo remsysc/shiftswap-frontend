@@ -36,8 +36,9 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             isLoading.value = true;
             const response = await authApi.getCurrentUser();
-            user.value = response.data;
-            return response.data;
+            const userData = (response as any)?.data || (response as any);
+            user.value = userData;
+            return userData;
         } catch (error) {
             setToken(null);
             user.value = null;
@@ -53,7 +54,7 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             const response = await authApi.login(payload);
             setToken(response.token);
-            user.value = response.data;
+            user.value = (response as any)?.data || (response as any);
         } finally {
             isLoading.value = false;
         }
@@ -64,7 +65,7 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             const response = await authApi.register(payload);
             setToken(response.token);
-            user.value = response.data;
+            user.value = (response as any)?.data || (response as any);
         } finally {
             isLoading.value = false;
         }
@@ -75,7 +76,7 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             const response = await authApi.acceptInvitation(inviteToken, payload);
             setToken(response.token);
-            user.value = response.data;
+            user.value = (response as any)?.data || (response as any);
         } finally {
             isLoading.value = false;
         }

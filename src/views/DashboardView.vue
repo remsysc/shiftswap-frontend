@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import { dashboardApi } from '../api/dashboard';
@@ -13,7 +13,10 @@ const staffData = ref<StaffDashboardData | null>(null);
 const isManager = computed(() => authStore.isManagerOrOwner);
 
 async function loadDashboard(): Promise<void> {
-    if (!authStore.businessId) return;
+    if (!authStore.businessId) {
+        isLoading.value = false;
+        return;
+    }
     try {
         isLoading.value = true;
         const res = await dashboardApi.get(authStore.businessId);
@@ -29,8 +32,19 @@ async function loadDashboard(): Promise<void> {
     }
 }
 
+watch(
+    () => authStore.businessId,
+    (id) => {
+        if (id) {
+            loadDashboard();
+        }
+    }
+);
+
 onMounted(() => {
-    loadDashboard();
+    if (authStore.businessId) {
+        loadDashboard();
+    }
 });
 </script>
 
