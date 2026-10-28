@@ -123,7 +123,12 @@ async function loadMeta(): Promise<void> {
             staffApi.list(authStore.businessId),
         ]);
         locations.value = locRes.data;
-        staffMembers.value = staffRes.data;
+        staffMembers.value = staffRes.data.map((m: any) => ({
+            id: m.user?.id || m.id,
+            name: m.name || m.user?.name || '',
+            email: m.email || m.user?.email || '',
+            role: m.role || m.user?.role || 'staff',
+        }));
     } catch {
         // ignore
     }

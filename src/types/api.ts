@@ -21,7 +21,10 @@ export interface BusinessMember {
     name: string;
     email: string;
     role: UserRole;
+    user?: User;
+    pivot_id?: number;
     joined_at?: string;
+    created_at?: string;
 }
 
 export interface Location {

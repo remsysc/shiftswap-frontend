@@ -77,7 +77,7 @@ export const router = createRouter({
     routes,
 });
 
-router.beforeEach(async (to, _from, next) => {
+router.beforeEach(async (to, _from) => {
     const authStore = useAuthStore();
 
     if (!authStore.isInitialized) {
@@ -85,14 +85,10 @@ router.beforeEach(async (to, _from, next) => {
     }
 
     if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-        next({ name: 'login', query: { redirect: to.fullPath } });
-        return;
+        return { name: 'login', query: { redirect: to.fullPath } };
     }
 
     if (to.meta.guestOnly && authStore.isAuthenticated) {
-        next({ name: 'dashboard' });
-        return;
+        return { name: 'dashboard' };
     }
-
-    next();
 });

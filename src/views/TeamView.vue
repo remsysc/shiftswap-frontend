@@ -27,7 +27,9 @@ const filteredMembers = computed(() => {
     if (!searchQuery.value) return members.value;
     const q = searchQuery.value.toLowerCase();
     return members.value.filter(
-        (m) => m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q)
+        (m) =>
+            (m.name?.toLowerCase() || '').includes(q) ||
+            (m.email?.toLowerCase() || '').includes(q)
     );
 });
 
@@ -37,7 +39,13 @@ async function loadMembers(): Promise<void> {
         isLoading.value = true;
         errorAlert.value = '';
         const res = await staffApi.list(authStore.businessId);
-        members.value = res.data;
+        members.value = res.data.map((m: any) => ({
+            id: m.user?.id || m.id,
+            name: m.name || m.user?.name || '',
+            email: m.email || m.user?.email || '',
+            role: m.role || m.user?.role || 'staff',
+            created_at: m.created_at,
+        }));
     } catch (e: any) {
         errorAlert.value = e.message || 'Failed to load team members.';
     } finally {
@@ -184,7 +192,7 @@ onMounted(() => {
                 >
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center">
-                            {{ member.name.slice(0, 2).toUpperCase() }}
+                            {{ (member.name || 'Member').slice(0, 2).toUpperCase() }}
                         </div>
                         <div>
                             <p class="text-sm font-bold text-slate-900">{{ member.name }}</p>
