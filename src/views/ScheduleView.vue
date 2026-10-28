@@ -584,7 +584,7 @@ onMounted(() => {
                         >
                             <option :value="null">Choose staff member...</option>
                             <option v-for="m in staffMembers" :key="m.id" :value="m.id">
-                                {{ m.name }} ({{ m.role }})
+                                {{ m.name }} ({{ m.role }}) &mdash; {{ m.email }}
                             </option>
                         </select>
                     </div>
