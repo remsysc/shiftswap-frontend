@@ -25,7 +25,7 @@ export const locationsApi = {
 
     async update(businessId: number, locationId: number, payload: UpdateLocationPayload): Promise<{ data: Location }> {
         return apiFetch<{ data: Location }>(`/businesses/${businessId}/locations/${locationId}`, {
-            method: 'PUT',
+            method: 'PATCH',
             body: JSON.stringify(payload),
         });
     },

@@ -52,6 +52,7 @@ export interface Shift {
     start_at: string;
     end_at: string;
     created_by: number;
+    staff?: ShiftStaffAssignment[];
     assigned_staff?: ShiftStaffAssignment[];
     created_at?: string;
     updated_at?: string;

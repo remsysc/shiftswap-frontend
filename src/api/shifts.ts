@@ -31,7 +31,7 @@ export const shiftsApi = {
 
     async updateShift(businessId: number, shiftId: number, payload: UpdateShiftPayload): Promise<{ data: Shift }> {
         return apiFetch<{ data: Shift }>(`/businesses/${businessId}/shifts/${shiftId}`, {
-            method: 'PUT',
+            method: 'PATCH',
             body: JSON.stringify(payload),
         });
     },

@@ -45,4 +45,10 @@ export const swapsApi = {
             body: JSON.stringify({ cancellation_reason: reason }),
         });
     },
+
+    async withdrawSwap(businessId: number, swapId: number): Promise<{ data: ShiftSwap }> {
+        return apiFetch<{ data: ShiftSwap }>(`/businesses/${businessId}/shift-swaps/${swapId}/withdraw`, {
+            method: 'POST',
+        });
+    },
 };

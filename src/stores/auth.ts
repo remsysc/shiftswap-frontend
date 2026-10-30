@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { authApi, type LoginPayload, type RegisterPayload, type AcceptInvitePayload } from '../api/auth';
 import { registerUnauthorizedHandler } from '../api/client';
-import type { User, Business, UserRole } from '../types/api';
+import type { User, Business, UserRole, Location } from '../types/api';
 
 export const useAuthStore = defineStore('auth', () => {
     const token = ref<string | null>(localStorage.getItem('shiftswap_token'));
@@ -10,12 +10,71 @@ export const useAuthStore = defineStore('auth', () => {
     const isLoading = ref<boolean>(false);
     const isInitialized = ref<boolean>(false);
 
+    const locations = ref<Location[]>([]);
+    const selectedLocationId = ref<string>('all');
+
     const business = computed<Business | null>(() => user.value?.business || null);
     const businessId = computed<number | null>(() => business.value?.id || null);
     const role = computed<UserRole>(() => user.value?.role || 'staff');
     const isManagerOrOwner = computed<boolean>(() => role.value === 'owner' || role.value === 'manager');
     const isOwner = computed<boolean>(() => role.value === 'owner');
     const isAuthenticated = computed<boolean>(() => !!token.value);
+
+    const selectedLocation = computed<Location | null>(() => {
+        if (selectedLocationId.value === 'all') {
+            return null;
+        }
+        return locations.value.find((loc) => String(loc.id) === selectedLocationId.value) || null;
+    });
+
+    const selectedLocationIndex = computed<number>(() => {
+        if (selectedLocationId.value === 'all') {
+            return -1;
+        }
+        return locations.value.findIndex((loc) => String(loc.id) === selectedLocationId.value);
+    });
+
+    function setLocations(newLocations: Location[]): void {
+        locations.value = newLocations;
+        if (
+            selectedLocationId.value !== 'all' &&
+            !newLocations.some((loc) => String(loc.id) === selectedLocationId.value)
+        ) {
+            selectedLocationId.value = 'all';
+        }
+    }
+
+    function branchNameAt(index: number, fallback: string): string {
+        return locations.value[index]?.name || fallback;
+    }
+
+    function matchesLocation(
+        locationId?: number | string | null,
+        locationName?: string | null,
+        branchIndex?: number
+    ): boolean {
+        if (selectedLocationId.value === 'all') {
+            return true;
+        }
+        if (locationId !== undefined && locationId !== null && String(locationId) === selectedLocationId.value) {
+            return true;
+        }
+        if (selectedLocation.value && locationName) {
+            const target = selectedLocation.value.name.toLowerCase();
+            const candidate = locationName.toLowerCase();
+            if (candidate.includes(target) || target.includes(candidate)) {
+                return true;
+            }
+        }
+        if (
+            branchIndex !== undefined &&
+            selectedLocationIndex.value !== -1 &&
+            branchIndex === selectedLocationIndex.value
+        ) {
+            return true;
+        }
+        return false;
+    }
 
     function setToken(newToken: string | null): void {
         token.value = newToken;
@@ -111,6 +170,13 @@ export const useAuthStore = defineStore('auth', () => {
         isAuthenticated,
         isLoading,
         isInitialized,
+        locations,
+        selectedLocationId,
+        selectedLocation,
+        selectedLocationIndex,
+        setLocations,
+        branchNameAt,
+        matchesLocation,
         setToken,
         fetchUser,
         login,

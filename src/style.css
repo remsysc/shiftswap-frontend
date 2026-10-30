@@ -1,14 +1,233 @@
 @import 'tailwindcss';
 
 @theme inline {
-    --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-headline: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+
+    --color-primary: #2D4F67;
+    --color-primary-hover: #1F384C;
+    --color-primary-container: #2D4F67;
+    --color-on-primary: #FFFFFF;
+    --color-primary-light: #E3E8EC;
+
+    --color-sumi-ink: #1F1F28;
+    --color-pebble: #5A5D64;
+    --color-pebble-light: #8A8D93;
+
+    --color-canvas: #F2EFE9;
+    --color-surface-well: #FAF8F5;
+    --color-surface-card: #FFFFFF;
+    --color-border-rice: #DCD7CE;
+    --color-border-rice-subtle: #E7E3DC;
+
+    --color-dragon-sumi: #16181D;
+    --color-dragon-elevated: #1E2127;
+
+    --color-moss: #76946A;
+    --color-moss-wash: #EAF0E8;
+    --color-moss-border: #C9DBC2;
+
+    --color-carp-gold: #C0A36E;
+    --color-carp-gold-bright: #DCA561;
+    --color-carp-gold-wash: #FAF3E8;
+    --color-carp-gold-border: #ECDDBF;
+
+    --color-maple-coral: #C34043;
+    --color-maple-wash: #FCECEC;
+
+    --color-wave-slate: #4E6E82;
+    --color-wave-wash: #E6ECF0;
 }
 
 html {
-    background: #f7f8fc;
+    background: #F2EFE9;
+    color: #1F1F28;
 }
 
 body {
     margin: 0;
     min-width: 320px;
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
 }
+
+.font-mono-num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' on, 'zero' on;
+    letter-spacing: -0.01em;
+}
+
+.perforated-border {
+    background-image: repeating-linear-gradient(
+        to bottom,
+        #DCD7CE 0,
+        #DCD7CE 6px,
+        transparent 6px,
+        transparent 12px
+    );
+}
+
+.ticket-notch-top {
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background-color: #F2EFE9;
+    box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.ticket-notch-bottom {
+    position: absolute;
+    bottom: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background-color: #F2EFE9;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* ========================================================================= */
+/* TICKET TEARING ANIMATION (TACTILE PAPER RIP ON SWAP CANCEL)                */
+/* ========================================================================= */
+
+@keyframes tearLeftHalf {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+        opacity: 1;
+    }
+    25% {
+        transform: translate(-4px, -2px) rotate(-1.5deg);
+        clip-path: polygon(0% 0%, 98% 0%, 100% 15%, 97% 30%, 100% 45%, 96% 60%, 100% 75%, 97% 90%, 100% 100%, 0% 100%);
+    }
+    55% {
+        transform: translate(-20px, 16px) rotate(-7deg);
+        clip-path: polygon(0% 0%, 98% 0%, 100% 15%, 97% 30%, 100% 45%, 96% 60%, 100% 75%, 97% 90%, 100% 100%, 0% 100%);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translate(-50px, 65px) rotate(-16deg);
+        opacity: 0;
+    }
+}
+
+@keyframes tearRightHalf {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+        opacity: 1;
+    }
+    25% {
+        transform: translate(4px, 2px) rotate(1.5deg);
+        clip-path: polygon(2% 0%, 100% 0%, 100% 100%, 0% 100%, 3% 90%, 0% 75%, 4% 60%, 0% 45%, 3% 30%, 0% 15%);
+    }
+    55% {
+        transform: translate(20px, 18px) rotate(7deg);
+        clip-path: polygon(2% 0%, 100% 0%, 100% 100%, 0% 100%, 3% 90%, 0% 75%, 4% 60%, 0% 45%, 3% 30%, 0% 15%);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translate(50px, 70px) rotate(16deg);
+        opacity: 0;
+    }
+}
+
+@keyframes tearCardCollapse {
+    0% {
+        max-height: 320px;
+        opacity: 1;
+        margin-bottom: 0.75rem;
+    }
+    60% {
+        max-height: 320px;
+        opacity: 0.9;
+        margin-bottom: 0.75rem;
+    }
+    100% {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-width: 0;
+    }
+}
+
+@keyframes ripFlash {
+    0% {
+        opacity: 0;
+        transform: scaleY(0.7);
+    }
+    25% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scaleY(1.1);
+    }
+}
+
+.ticket-is-tearing {
+    pointer-events: none !important;
+    animation: tearCardCollapse 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    overflow: hidden !important;
+}
+
+.ticket-is-tearing .ticket-half-left {
+    animation: tearLeftHalf 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+    transform-origin: bottom left;
+}
+
+.ticket-is-tearing .ticket-half-right {
+    animation: tearRightHalf 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+    transform-origin: bottom right;
+}
+
+.ticket-tear-line {
+    display: none;
+}
+
+.ticket-is-tearing .ticket-tear-line {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    z-index: 30;
+    animation: ripFlash 0.45s ease-out forwards;
+    background: repeating-linear-gradient(
+        180deg,
+        #C34043 0px,
+        #C34043 4px,
+        transparent 4px,
+        transparent 8px
+    );
+    box-shadow: 0 0 10px rgba(195, 64, 67, 0.5);
+}
+
+/* Global Undo Pop-up Transitions */
+.undo-pop-enter-active,
+.undo-pop-leave-active {
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.undo-pop-enter-from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+}
+.undo-pop-leave-to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+}
+
